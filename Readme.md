@@ -27,6 +27,8 @@ start server : surreal start --log info --user root --pass pass [path]
 
 connection: surreal sql --conn http://localhost:8000 --user root --pass pass --ns hkjc --db odds
 
+export : surreal export --conn http://localhost:8000 --user root --pass pass --ns hkjc --db odds export.sql
+
 ### Run
 
 Monitor Sudden Odds Changes
