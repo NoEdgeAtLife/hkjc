@@ -7,6 +7,7 @@ let QplOdds = {};
 const color = ["正常", "大熱","綠格", "啡格"];
 let pools = {};
 let poolsdiff = {};
+let raceno = 0;
 
 // win odds and place odds
 // api url: https://bet.hkjc.com/racing/getJSON.aspx?type=winplaodds&date=<YYYY-MM-DD>&venue=<ST|HV>&start=<start_raceno>&end=<end_raceno>
@@ -252,6 +253,27 @@ async function getPoolSize(date,venue,raceno,pools,poolsdiff) {
     }
 }
 
+// get current race no
+// https://bet.hkjc.com/racing/getJSON.aspx?type=scratched&date=<YYYY-MM-DD>&venue=<venue>
+// sample response
+// {
+//     RAN_RACE: "0",
+//     SCR_LIST: "HV",
+//     SR: "HV",
+//     SS: ""
+// }
+async function checkRaceNo(date,venue){
+    try {
+        return await axios.get('https://bet.hkjc.com/racing/getJSON.aspx?type=scratched&date=' + date + '&venue=' + venue)
+            .then(response => {
+                return +response.data["RAN_RACE"]+1;
+        })
+    }
+     catch (e) {
+        console.error('ERROR', e);
+    }
+}
+
 // get html from https://bet.hkjc.com/racing/pages/odds_wp.aspx?lang=en&dv=local
 // search for this line : $.getScript("/racing/script/rsdata.js?lang=en&date=2022-09-14&venue=HV ...
 // get date and venue code from this line
@@ -279,9 +301,13 @@ const main = async() => {
     const {date,venue} = await getDateVenue();
     console.log(date,venue, "大戶落飛追蹤中...");
     const refreshfeq = 1000; //1 second
-        setInterval(() => {
-            let raceno = 1; // need to get the current race number and reset all odds upon changes
+        setInterval(async() => {
             console.log("timestamp:", Date.now());
+            let currentrace = await checkRaceNo(date,venue);
+            if (currentrace !== raceno) {
+                raceno = currentrace;
+                console.log("壢次變更，現在場次: " + raceno);
+            }
             getWinPlaceOdds(date,venue,raceno,raceno,WinPlaceOdds);
             getQuinellaOdds(date,venue,raceno,QinOdds);
             getQuinellaPlaceOdds(date,venue,raceno,QplOdds);
