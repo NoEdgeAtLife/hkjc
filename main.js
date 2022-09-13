@@ -57,5 +57,10 @@ async function get_data(url) {
 
 // every 2 seconds, send a request to the server
 setInterval(() => {
-
+  get_data("https://bet.hkjc.com/racing/getJSON.aspx?type=winplaodds&date=2022-09-11&venue=ST&start=1&end=10");
 }, 2000);
+
+setInterval(() => {
+  get_data("https://bet.hkjc.com/racing/getJSON.aspx?type=winplaodds&date=2022-09-11&venue=HV&start=1&end=10");
+}
+, 2000);
