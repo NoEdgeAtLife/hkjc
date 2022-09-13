@@ -246,7 +246,7 @@ async function getPoolSize(date,venue,raceno,pools,poolsdiff) {
             // store the diff of pool size in poolsdiff
             if (pools[pool] !== undefined) {
                 poolsdiff[pool] = value - pools[pool];
-                if (poolsdiff[pool] !== 0) {
+                if (poolsdiff[pool] > 0) {
                 console.log("timestamp:", Date.now());
                 console.log(pool + " pool size changed from " + pools[pool] + " to " + value + ", diff: " + poolsdiff[pool]);
                 }
