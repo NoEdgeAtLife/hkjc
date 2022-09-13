@@ -29,9 +29,9 @@ node notification.js
 
 ### To Do
 
-- [ X ] Auto switch race numbers
+- [X] Auto switch race numbers
 
-- [ X ] Replace example data with real response
+- [X] Replace example data with real response
 
 - [ ] Aggregate all changes in output
 
