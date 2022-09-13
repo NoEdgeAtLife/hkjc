@@ -40,9 +40,11 @@ async function getWinPlaceOdds(date, venue, start, end, WinPlaceOdds) {
                     // if WinPlaceOdds[winOddsSplit[0]] is not empty, check if odds is different
                     if (WinPlaceOdds[winOddsSplit[0]] !== undefined) {
                         if (WinPlaceOdds[winOddsSplit[0]].isFavWin !== winOddsSplit[2]) {
+                            console.log("timestamp:", Date.now());
                             console.log("獨贏落飛: " + winOddsSplit[0] + " 由 " + color[WinPlaceOdds[winOddsSplit[0]].isFavWin] + " 變 " + color[winOddsSplit[2]]);
                         }
                         if (WinPlaceOdds[winOddsSplit[0]].isFavPlace !== placeOddsSplit[2]) {
+                            console.log("timestamp:", Date.now());
                             console.log("位置落飛: " + winOddsSplit[0] + " 由 " + color[WinPlaceOdds[winOddsSplit[0]].isFavPlace] + " 變 " + color[placeOddsSplit[2]]);
                         }
                     }
@@ -95,6 +97,7 @@ async function getQuinellaOdds(date, venue, raceno, QinOdds) {
                         //     console.log("quinella: " + quinellaOddsSplit[0] + " odds changed from " + QinOdds[quinellaOddsSplit[0]].odds + " to " + quinellaOddsSplit[1]);
                         // }
                         if (QinOdds[quinellaOddsSplit[0]].isFav !== quinellaOddsSplit[2]) {
+                            console.log("timestamp:", Date.now());
                             console.log("連贏落飛: " + quinellaOddsSplit[0] + " 由 " + color[QinOdds[quinellaOddsSplit[0]].isFav] + " 變 " + color[quinellaOddsSplit[2]]);
                         }
                     }
@@ -145,6 +148,7 @@ async function getQuinellaPlaceOdds(date, venue, raceno, QplOdds) {
                         //     console.log("quinella Place: " + quinellaPlaceOddsSplit[0] + " odds changed from " + QplOdds[quinellaPlaceOddsSplit[0]].odds + " to " + quinellaOddsSplit[1]);
                         // }
                         if (QplOdds[quinellaPlaceOddsSplit[0]].isFav !== quinellaPlaceOddsSplit[2]) {
+                            console.log("timestamp:", Date.now());
                             console.log("位置Q落飛: " + quinellaPlaceOddsSplit[0] + " 由 " + color[QplOdds[quinellaPlaceOddsSplit[0]].isFav] + " 變 " + color[quinellaPlaceOddsSplit[2]]);
                         }
                     }
@@ -243,6 +247,7 @@ async function getPoolSize(date,venue,raceno,pools,poolsdiff) {
             if (pools[pool] !== undefined) {
                 poolsdiff[pool] = value - pools[pool];
                 if (poolsdiff[pool] !== 0) {
+                console.log("timestamp:", Date.now());
                 console.log(pool + " pool size changed from " + pools[pool] + " to " + value + ", diff: " + poolsdiff[pool]);
                 }
             }
@@ -266,7 +271,7 @@ async function checkRaceNo(date,venue){
     try {
         return await axios.get('https://bet.hkjc.com/racing/getJSON.aspx?type=scratched&date=' + date + '&venue=' + venue)
             .then(response => {
-                return +response.data["RAN_RACE"]+1;
+                return + response.data["RAN_RACE"]+1;
         })
     }
      catch (e) {
@@ -302,7 +307,7 @@ const main = async() => {
     console.log(date,venue, "大戶落飛追蹤中...");
     const refreshfeq = 1000; //1 second
         setInterval(async() => {
-            console.log("timestamp:", Date.now());
+            // console.log("timestamp:", Date.now());
             let currentrace = await checkRaceNo(date,venue);
             if (currentrace !== raceno) {
                 raceno = currentrace;
@@ -311,9 +316,9 @@ const main = async() => {
             getWinPlaceOdds(date,venue,raceno,raceno,WinPlaceOdds);
             getQuinellaOdds(date,venue,raceno,QinOdds);
             getQuinellaPlaceOdds(date,venue,raceno,QplOdds);
-            console.log("--------------------------------------------------");
+            // console.log("--------------------------------------------------");
             getPoolSize(date,venue,raceno,pools,poolsdiff);
-            console.log("--------------------------------------------------");
+            // console.log("--------------------------------------------------");
         }
         , refreshfeq);
 };
