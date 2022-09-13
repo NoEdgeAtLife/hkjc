@@ -305,7 +305,7 @@ async function getDateVenue() {
 const main = async() => {
     const {date,venue} = await getDateVenue();
     console.log(date,venue, "大戶落飛追蹤中...");
-    const refreshfeq = 1000; //1 second
+    const refreshfeq = 10000; //1000 = 1 second
         setInterval(async() => {
             // console.log("timestamp:", Date.now());
             let currentrace = await checkRaceNo(date,venue);

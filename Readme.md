@@ -19,12 +19,26 @@ curl -sSf https://install.surrealdb.com | sh
 ```
 docker run --rm -p 8000:8000 surrealdb/surrealdb:latest start
 
-### Run Version 1
+### sureraldb
+
+start server : surreal start --log info --user root --pass pass [path]
+
+[path] default to be memory, can be set to a subdirectory, for example "file://hkjc"
+
+connection: surreal sql --conn http://localhost:8000 --user root --pass pass --ns hkjc --db odds
+
+### Run
 
 Monitor Sudden Odds Changes
 
 ```bash
 node notification.js
+```
+
+For data collection
+
+```bash
+node main.js
 ```
 
 ### To Do
@@ -35,7 +49,9 @@ node notification.js
 
 - [ ] Aggregate all changes in output
 
-- [ ] Database (main.js)
+- [X] Database test for storing win and place odds (main.js)
+
+- [ ] Refine database (main.js)
 
 - [ ] Docker and process management
 
