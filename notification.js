@@ -1,14 +1,24 @@
 // app.js
 // alert green box and brown box
-const  axios   =   require ( 'axios' ) ;
+const  axios = require ( 'axios' ) ;
 let WinPlaceOdds = {};
 let QinOdds = {};
 let QplOdds = {};
-const color = ["正常", "大熱","綠格", "啡格"];
 let pools = {};
 let poolsdiff = {};
 let raceno = 0;
+const { ArgumentParser } = require('argparse');
+const parser = new ArgumentParser();
+parser.add_argument('-l', '--lang', { 
+    help: 'en or chi, default: en',
+    choices:['en','chi'],
+    default:'en'
+});
+args = parser.parse_args();
+lang = args.lang;
 
+const color = lang === "en"? ["White", "Red","Green", "Brown"]:["正常", "大熱","綠格", "啡格"];
+console.log(color);
 // win odds and place odds
 // api url: https://bet.hkjc.com/racing/getJSON.aspx?type=winplaodds&date=<YYYY-MM-DD>&venue=<ST|HV>&start=<start_raceno>&end=<end_raceno>
 // exmaple: https://bet.hkjc.com/racing/getJSON.aspx?type=winplaodds&date=2022-09-11&venue=ST&start=1&end=10
@@ -41,11 +51,23 @@ async function getWinPlaceOdds(date, venue, start, end, WinPlaceOdds) {
                     if (WinPlaceOdds[winOddsSplit[0]] !== undefined) {
                         if (WinPlaceOdds[winOddsSplit[0]].isFavWin !== winOddsSplit[2]) {
                             console.log("timestamp:", Date.now());
-                            console.log("獨贏落飛: " + winOddsSplit[0] + " 由 " + color[WinPlaceOdds[winOddsSplit[0]].isFavWin] + " 變 " + color[winOddsSplit[2]]);
+                            switch(lang){
+                                case "chi":
+                                    console.log("獨贏落飛: " + winOddsSplit[0] + " 由 " + color[WinPlaceOdds[winOddsSplit[0]].isFavWin] + " 變 " + color[winOddsSplit[2]]);
+                                    break;
+                                default:
+                                   console.log("Win bet: " + winOddsSplit[0] + " from " + color[WinPlaceOdds[winOddsSplit[0]].isFavWin] + " to " + color[winOddsSplit[2]]);
+                            }
                         }
                         if (WinPlaceOdds[winOddsSplit[0]].isFavPlace !== placeOddsSplit[2]) {
                             console.log("timestamp:", Date.now());
-                            console.log("位置落飛: " + winOddsSplit[0] + " 由 " + color[WinPlaceOdds[winOddsSplit[0]].isFavPlace] + " 變 " + color[placeOddsSplit[2]]);
+                            switch(lang){
+                                case "chi":
+                                    console.log("位置落飛: " + winOddsSplit[0] + " 由 " + color[WinPlaceOdds[winOddsSplit[0]].isFavPlace] + " 變 " + color[placeOddsSplit[2]]);
+                                    break;
+                                default:
+                                    console.log("Place bet: " + winOddsSplit[0] + " from " + color[WinPlaceOdds[winOddsSplit[0]].isFavPlace] + " to " + color[placeOddsSplit[2]]);
+                            }
                         }
                     }
                     // push to array, using horse no as key
@@ -304,14 +326,14 @@ async function getDateVenue() {
 
 const main = async() => {
     const {date,venue} = await getDateVenue();
-    console.log(date,venue, "大戶落飛追蹤中...");
+    console.log(date,venue, lang==="en"? "Odd tracking in progress...:":"大戶落飛追蹤中...");
     const refreshfeq = 10000; //1000 = 1 second
         setInterval(async() => {
             // console.log("timestamp:", Date.now());
             let currentrace = await checkRaceNo(date,venue);
             if (currentrace !== raceno) {
                 raceno = currentrace;
-                console.log("壢次變更，現在場次: " + raceno);
+                console.log(lang==="en"? "Current race no.:":"壢次變更，現在場次: " + raceno);
             }
             getWinPlaceOdds(date,venue,raceno,raceno,WinPlaceOdds);
             getQuinellaOdds(date,venue,raceno,QinOdds);
