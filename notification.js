@@ -1,13 +1,23 @@
 // app.js
 // alert green box and brown box
-const  axios   =   require ( 'axios' ) ;
+const  axios = require ( 'axios' ) ;
 let WinPlaceOdds = {};
 let QinOdds = {};
 let QplOdds = {};
-const color = ["正常", "大熱","綠格", "啡格"];
 let pools = {};
 let poolsdiff = {};
 let raceno = 0;
+const { ArgumentParser } = require('argparse');
+const parser = new ArgumentParser();
+parser.add_argument('-l', '--lang', { 
+    help: 'en or chi, default: en',
+    choices:['en','chi'],
+    default:'en'
+});
+args = parser.parse_args();
+lang = args.lang;
+
+const color = lang === "en"? ["White", "Red","Green", "Brown"]:["正常", "大熱","綠格", "啡格"];
 
 // win odds and place odds
 // api url: https://bet.hkjc.com/racing/getJSON.aspx?type=winplaodds&date=<YYYY-MM-DD>&venue=<ST|HV>&start=<start_raceno>&end=<end_raceno>
@@ -23,6 +33,7 @@ async function getWinPlaceOdds(date, venue, start, end, WinPlaceOdds) {
             //     if (Object.keys(WinPlaceOdds).length === 0) {
             //         example = "@@@WIN;1=11=0;2=4.4=2;3=7.6=0;4=18=2;5=25=0;6=14=0;7=37=0;8=15=0;9=14=0;10=16=0;11=11=0;12=13=0;13=24=0;14=5.5=0#PLA;1=11=0;2=4.4=1;3=7.6=0;4=18=0;5=25=0;6=14=0;7=37=0;8=15=0;9=14=1;10=16=0;11=11=0;12=13=0;13=24=0;14=5.5=0";
             // }
+                try{
                 const data = response.data['OUT'].split("@@@")[1];
                 // split win and place
                 const winPlaceOdds = data.split("#");
@@ -41,11 +52,23 @@ async function getWinPlaceOdds(date, venue, start, end, WinPlaceOdds) {
                     if (WinPlaceOdds[winOddsSplit[0]] !== undefined) {
                         if (WinPlaceOdds[winOddsSplit[0]].isFavWin !== winOddsSplit[2]) {
                             console.log("timestamp:", Date.now());
-                            console.log("獨贏落飛: " + winOddsSplit[0] + " 由 " + color[WinPlaceOdds[winOddsSplit[0]].isFavWin] + " 變 " + color[winOddsSplit[2]]);
+                            switch(lang){
+                                case "chi":
+                                    console.log("獨贏落飛: " + winOddsSplit[0] + " 由 " + color[WinPlaceOdds[winOddsSplit[0]].isFavWin] + " 變 " + color[winOddsSplit[2]]);
+                                    break;
+                                default:
+                                   console.log("Win bet: " + winOddsSplit[0] + " from " + color[WinPlaceOdds[winOddsSplit[0]].isFavWin] + " to " + color[winOddsSplit[2]]);
+                            }
                         }
                         if (WinPlaceOdds[winOddsSplit[0]].isFavPlace !== placeOddsSplit[2]) {
                             console.log("timestamp:", Date.now());
-                            console.log("位置落飛: " + winOddsSplit[0] + " 由 " + color[WinPlaceOdds[winOddsSplit[0]].isFavPlace] + " 變 " + color[placeOddsSplit[2]]);
+                            switch(lang){
+                                case "chi":
+                                    console.log("位置落飛: " + winOddsSplit[0] + " 由 " + color[WinPlaceOdds[winOddsSplit[0]].isFavPlace] + " 變 " + color[placeOddsSplit[2]]);
+                                    break;
+                                default:
+                                    console.log("Place bet: " + winOddsSplit[0] + " from " + color[WinPlaceOdds[winOddsSplit[0]].isFavPlace] + " to " + color[placeOddsSplit[2]]);
+                            }
                         }
                     }
                     // push to array, using horse no as key
@@ -56,7 +79,7 @@ async function getWinPlaceOdds(date, venue, start, end, WinPlaceOdds) {
                         placeOdds: placeOddsSplit[1],
                         isFavPlace: placeOddsSplit[2]
                     };
-                }
+                }}catch(e){};
             })
             .catch(err => console.log(new Date(), err.message));
     } catch (e) {
@@ -98,7 +121,13 @@ async function getQuinellaOdds(date, venue, raceno, QinOdds) {
                         // }
                         if (QinOdds[quinellaOddsSplit[0]].isFav !== quinellaOddsSplit[2]) {
                             console.log("timestamp:", Date.now());
-                            console.log("連贏落飛: " + quinellaOddsSplit[0] + " 由 " + color[QinOdds[quinellaOddsSplit[0]].isFav] + " 變 " + color[quinellaOddsSplit[2]]);
+                            switch(lang){
+                                case "chi":
+                                    console.log("連贏落飛: " + quinellaOddsSplit[0] + " 由 " + color[QinOdds[quinellaOddsSplit[0]].isFav] + " 變 " + color[quinellaOddsSplit[2]]);
+                                    break;
+                                default:
+                                    console.log("Quinella bet: " + quinellaOddsSplit[0] + " from " + color[QinOdds[quinellaOddsSplit[0]].isFav] + " to " + color[quinellaOddsSplit[2]]);  
+                            }
                         }
                     }
                     // push to array, using horse1-horse2 as key
@@ -149,7 +178,13 @@ async function getQuinellaPlaceOdds(date, venue, raceno, QplOdds) {
                         // }
                         if (QplOdds[quinellaPlaceOddsSplit[0]].isFav !== quinellaPlaceOddsSplit[2]) {
                             console.log("timestamp:", Date.now());
-                            console.log("位置Q落飛: " + quinellaPlaceOddsSplit[0] + " 由 " + color[QplOdds[quinellaPlaceOddsSplit[0]].isFav] + " 變 " + color[quinellaPlaceOddsSplit[2]]);
+                            switch(lang){
+                                case "chi":
+                                    console.log("位置Q落飛: " + quinellaPlaceOddsSplit[0] + " 由 " + color[QplOdds[quinellaPlaceOddsSplit[0]].isFav] + " 變 " + color[quinellaPlaceOddsSplit[2]]);
+                                    break;
+                                default:
+                                    console.log("Quinella Place bet: " + quinellaPlaceOddsSplit[0] + " from " + color[QplOdds[quinellaPlaceOddsSplit[0]].isFav] + " to " + color[quinellaPlaceOddsSplit[2]]);
+                            }
                         }
                     }
                     // push to array, using horse1-horse2 as key
@@ -243,12 +278,18 @@ async function getPoolSize(date,venue,raceno,pools,poolsdiff) {
         for (let i = 0; i < response.data.inv.length; i++) {
             let pool = response.data.inv[i].pool;
             let value = response.data.inv[i].value;
-            // store the diff of pool size in poolsdiff
+            // store the diff of pool size in pools diff
             if (pools[pool] !== undefined) {
                 poolsdiff[pool] = value - pools[pool];
                 if (poolsdiff[pool] > 0) {
-                console.log("timestamp:", Date.now());
-                console.log(pool + " pool size changed from " + pools[pool] + " to " + value + ", diff: " + poolsdiff[pool]);
+                    console.log("timestamp:", Date.now());
+                    switch(lang){
+                        case "chi":
+                            console.log(pool + " 彩池大小從 " + pools[pool] + " 變至 " + value + ", 相差: " + poolsdiff[pool]);
+                            break;
+                        default:
+                            console.log(pool + " pool size changed from " + pools[pool] + " to " + value + ", diff: " + poolsdiff[pool]);
+                    }
                 }
             }
             pools[pool] = value;
@@ -304,20 +345,20 @@ async function getDateVenue() {
 
 const main = async() => {
     const {date,venue} = await getDateVenue();
-    console.log(date,venue, "大戶落飛追蹤中...");
+    console.log(date,venue, lang==="en"? "Odd tracking in progress...":"大戶落飛追蹤中...");
     const refreshfeq = 10000; //1000 = 1 second
         setInterval(async() => {
             // console.log("timestamp:", Date.now());
             let currentrace = await checkRaceNo(date,venue);
             if (currentrace !== raceno) {
                 raceno = currentrace;
-                console.log("壢次變更，現在場次: " + raceno);
+                console.log( (lang==="en"? "Current race no.: ":"場次變更，現在場次: ") + raceno);
             }
             getWinPlaceOdds(date,venue,raceno,raceno,WinPlaceOdds);
             getQuinellaOdds(date,venue,raceno,QinOdds);
             getQuinellaPlaceOdds(date,venue,raceno,QplOdds);
             // console.log("--------------------------------------------------");
-            getPoolSize(date,venue,raceno,pools,poolsdiff);
+            //getPoolSize(date,venue,raceno,pools,poolsdiff);
             // console.log("--------------------------------------------------");
         }
         , refreshfeq);
