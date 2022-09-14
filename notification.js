@@ -277,12 +277,18 @@ async function getPoolSize(date,venue,raceno,pools,poolsdiff) {
         for (let i = 0; i < response.data.inv.length; i++) {
             let pool = response.data.inv[i].pool;
             let value = response.data.inv[i].value;
-            // store the diff of pool size in poolsdiff
+            // store the diff of pool size in pools diff
             if (pools[pool] !== undefined) {
                 poolsdiff[pool] = value - pools[pool];
                 if (poolsdiff[pool] > 0) {
-                console.log("timestamp:", Date.now());
-                console.log(pool + " pool size changed from " + pools[pool] + " to " + value + ", diff: " + poolsdiff[pool]);
+                    console.log("timestamp:", Date.now());
+                    switch(lang){
+                        case "chi":
+                            console.log(pool + " 彩池大小從 " + pools[pool] + " 變至 " + value + ", 相差: " + poolsdiff[pool]);
+                            break;
+                        default:
+                            console.log(pool + " pool size changed from " + pools[pool] + " to " + value + ", diff: " + poolsdiff[pool]);
+                    }
                 }
             }
             pools[pool] = value;
