@@ -34,7 +34,9 @@ async function getWinPlaceOdds(date, venue, start, end, WinPlaceOdds) {
             //         example = "@@@WIN;1=11=0;2=4.4=2;3=7.6=0;4=18=2;5=25=0;6=14=0;7=37=0;8=15=0;9=14=0;10=16=0;11=11=0;12=13=0;13=24=0;14=5.5=0#PLA;1=11=0;2=4.4=1;3=7.6=0;4=18=0;5=25=0;6=14=0;7=37=0;8=15=0;9=14=1;10=16=0;11=11=0;12=13=0;13=24=0;14=5.5=0";
             // }
                 try{
-                const data = response.data['OUT'].split("@@@")[1];
+                // search for the last occurance of "@" in the response
+                let index = response.data["OUT"].lastIndexOf("@");
+                let data = response.data["OUT"].substring(index + 1);
                 // split win and place
                 const winPlaceOdds = data.split("#");
                 // split <horseno>=<odds>=<isFav>
