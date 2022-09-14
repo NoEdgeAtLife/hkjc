@@ -355,6 +355,11 @@ const main = async() => {
             if (currentrace !== raceno) {
                 raceno = currentrace;
                 console.log( (lang==="en"? "Current race no.: ":"場次變更，現在場次: ") + raceno);
+                WinPlaceOdds = {};
+                QinOdds = {};
+                QplOdds = {};
+                pools = {};
+                poolsdiff = {};
             }
             getWinPlaceOdds(date,venue,raceno,raceno,WinPlaceOdds);
             getQuinellaOdds(date,venue,raceno,QinOdds);
