@@ -120,7 +120,13 @@ async function getQuinellaOdds(date, venue, raceno, QinOdds) {
                         // }
                         if (QinOdds[quinellaOddsSplit[0]].isFav !== quinellaOddsSplit[2]) {
                             console.log("timestamp:", Date.now());
-                            console.log("連贏落飛: " + quinellaOddsSplit[0] + " 由 " + color[QinOdds[quinellaOddsSplit[0]].isFav] + " 變 " + color[quinellaOddsSplit[2]]);
+                            switch(lang){
+                                case "chi":
+                                    console.log("連贏落飛: " + quinellaOddsSplit[0] + " 由 " + color[QinOdds[quinellaOddsSplit[0]].isFav] + " 變 " + color[quinellaOddsSplit[2]]);
+                                    break;
+                                default:
+                                    console.log("Quinella bet: " + quinellaOddsSplit[0] + " from " + color[QinOdds[quinellaOddsSplit[0]].isFav] + " to " + color[quinellaOddsSplit[2]]);  
+                            }
                         }
                     }
                     // push to array, using horse1-horse2 as key
@@ -171,7 +177,13 @@ async function getQuinellaPlaceOdds(date, venue, raceno, QplOdds) {
                         // }
                         if (QplOdds[quinellaPlaceOddsSplit[0]].isFav !== quinellaPlaceOddsSplit[2]) {
                             console.log("timestamp:", Date.now());
-                            console.log("位置Q落飛: " + quinellaPlaceOddsSplit[0] + " 由 " + color[QplOdds[quinellaPlaceOddsSplit[0]].isFav] + " 變 " + color[quinellaPlaceOddsSplit[2]]);
+                            switch(lang){
+                                case "chi":
+                                    console.log("位置Q落飛: " + quinellaPlaceOddsSplit[0] + " 由 " + color[QplOdds[quinellaPlaceOddsSplit[0]].isFav] + " 變 " + color[quinellaPlaceOddsSplit[2]]);
+                                    break;
+                                default:
+                                    console.log("Quinella Place bet: " + quinellaPlaceOddsSplit[0] + " from " + color[QplOdds[quinellaPlaceOddsSplit[0]].isFav] + " to " + color[quinellaPlaceOddsSplit[2]]);
+                            }
                         }
                     }
                     // push to array, using horse1-horse2 as key
