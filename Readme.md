@@ -37,6 +37,9 @@ Monitor Sudden Odds Changes
 node notification.js
 ```
 
+arg:
+--lang [eng|chi] default eng
+
 For data collection
 
 ```bash
