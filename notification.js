@@ -18,7 +18,7 @@ args = parser.parse_args();
 lang = args.lang;
 
 const color = lang === "en"? ["White", "Red","Green", "Brown"]:["正常", "大熱","綠格", "啡格"];
-console.log(color);
+
 // win odds and place odds
 // api url: https://bet.hkjc.com/racing/getJSON.aspx?type=winplaodds&date=<YYYY-MM-DD>&venue=<ST|HV>&start=<start_raceno>&end=<end_raceno>
 // exmaple: https://bet.hkjc.com/racing/getJSON.aspx?type=winplaodds&date=2022-09-11&venue=ST&start=1&end=10
