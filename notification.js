@@ -344,14 +344,14 @@ async function getDateVenue() {
 
 const main = async() => {
     const {date,venue} = await getDateVenue();
-    console.log(date,venue, lang==="en"? "Odd tracking in progress...:":"大戶落飛追蹤中...");
+    console.log(date,venue, lang==="en"? "Odd tracking in progress...":"大戶落飛追蹤中...");
     const refreshfeq = 10000; //1000 = 1 second
         setInterval(async() => {
             // console.log("timestamp:", Date.now());
             let currentrace = await checkRaceNo(date,venue);
             if (currentrace !== raceno) {
                 raceno = currentrace;
-                console.log(lang==="en"? "Current race no.:":"壢次變更，現在場次: " + raceno);
+                console.log( (lang==="en"? "Current race no.: ":"場次變更，現在場次: ") + raceno);
             }
             getWinPlaceOdds(date,venue,raceno,raceno,WinPlaceOdds);
             getQuinellaOdds(date,venue,raceno,QinOdds);
