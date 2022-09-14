@@ -33,6 +33,7 @@ async function getWinPlaceOdds(date, venue, start, end, WinPlaceOdds) {
             //     if (Object.keys(WinPlaceOdds).length === 0) {
             //         example = "@@@WIN;1=11=0;2=4.4=2;3=7.6=0;4=18=2;5=25=0;6=14=0;7=37=0;8=15=0;9=14=0;10=16=0;11=11=0;12=13=0;13=24=0;14=5.5=0#PLA;1=11=0;2=4.4=1;3=7.6=0;4=18=0;5=25=0;6=14=0;7=37=0;8=15=0;9=14=1;10=16=0;11=11=0;12=13=0;13=24=0;14=5.5=0";
             // }
+                try{
                 const data = response.data['OUT'].split("@@@")[1];
                 // split win and place
                 const winPlaceOdds = data.split("#");
@@ -78,7 +79,7 @@ async function getWinPlaceOdds(date, venue, start, end, WinPlaceOdds) {
                         placeOdds: placeOddsSplit[1],
                         isFavPlace: placeOddsSplit[2]
                     };
-                }
+                }}catch(e){};
             })
             .catch(err => console.log(new Date(), err.message));
     } catch (e) {
@@ -357,7 +358,7 @@ const main = async() => {
             getQuinellaOdds(date,venue,raceno,QinOdds);
             getQuinellaPlaceOdds(date,venue,raceno,QplOdds);
             // console.log("--------------------------------------------------");
-            getPoolSize(date,venue,raceno,pools,poolsdiff);
+            //getPoolSize(date,venue,raceno,pools,poolsdiff);
             // console.log("--------------------------------------------------");
         }
         , refreshfeq);
