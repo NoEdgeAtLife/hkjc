@@ -53,7 +53,7 @@ async function getWinPlaceOdds(date, venue, start, end, WinPlaceOdds) {
                     // if WinPlaceOdds[winOddsSplit[0]] is not empty, check if odds is different
                     if (WinPlaceOdds[winOddsSplit[0]] !== undefined) {
                         if (WinPlaceOdds[winOddsSplit[0]].isFavWin !== winOddsSplit[2]) {
-                            console.log("timestamp:", Date.now());
+                            console.log("timestamp:", Date().toLocaleString('en-US'));
                             switch(lang){
                                 case "chi":
                                     console.log("獨贏落飛: " + winOddsSplit[0] + " 由 " + color[WinPlaceOdds[winOddsSplit[0]].isFavWin] + " 變 " + color[winOddsSplit[2]]);
@@ -63,7 +63,7 @@ async function getWinPlaceOdds(date, venue, start, end, WinPlaceOdds) {
                             }
                         }
                         if (WinPlaceOdds[winOddsSplit[0]].isFavPlace !== placeOddsSplit[2]) {
-                            console.log("timestamp:", Date.now());
+                            console.log("timestamp:", Date().toLocaleString('en-US'));
                             switch(lang){
                                 case "chi":
                                     console.log("位置落飛: " + winOddsSplit[0] + " 由 " + color[WinPlaceOdds[winOddsSplit[0]].isFavPlace] + " 變 " + color[placeOddsSplit[2]]);
@@ -122,7 +122,7 @@ async function getQuinellaOdds(date, venue, raceno, QinOdds) {
                         //     console.log("quinella: " + quinellaOddsSplit[0] + " odds changed from " + QinOdds[quinellaOddsSplit[0]].odds + " to " + quinellaOddsSplit[1]);
                         // }
                         if (QinOdds[quinellaOddsSplit[0]].isFav !== quinellaOddsSplit[2]) {
-                            console.log("timestamp:", Date.now());
+                            console.log("timestamp:", Date().toLocaleString('en-US'));
                             switch(lang){
                                 case "chi":
                                     console.log("連贏落飛: " + quinellaOddsSplit[0] + " 由 " + color[QinOdds[quinellaOddsSplit[0]].isFav] + " 變 " + color[quinellaOddsSplit[2]]);
@@ -179,7 +179,7 @@ async function getQuinellaPlaceOdds(date, venue, raceno, QplOdds) {
                         //     console.log("quinella Place: " + quinellaPlaceOddsSplit[0] + " odds changed from " + QplOdds[quinellaPlaceOddsSplit[0]].odds + " to " + quinellaOddsSplit[1]);
                         // }
                         if (QplOdds[quinellaPlaceOddsSplit[0]].isFav !== quinellaPlaceOddsSplit[2]) {
-                            console.log("timestamp:", Date.now());
+                            console.log("timestamp:", Date().toLocaleString('en-US'));
                             switch(lang){
                                 case "chi":
                                     console.log("位置Q落飛: " + quinellaPlaceOddsSplit[0] + " 由 " + color[QplOdds[quinellaPlaceOddsSplit[0]].isFav] + " 變 " + color[quinellaPlaceOddsSplit[2]]);
@@ -284,7 +284,7 @@ async function getPoolSize(date,venue,raceno,pools,poolsdiff) {
             if (pools[pool] !== undefined) {
                 poolsdiff[pool] = value - pools[pool];
                 if (poolsdiff[pool] > 0) {
-                    console.log("timestamp:", Date.now());
+                    console.log("timestamp:", Date().toLocaleString('en-US'));
                     switch(lang){
                         case "chi":
                             console.log(pool + " 彩池大小從 " + pools[pool] + " 變至 " + value + ", 相差: " + poolsdiff[pool]);
@@ -348,6 +348,7 @@ async function getDateVenue() {
 const main = async() => {
     const {date,venue} = await getDateVenue();
     console.log(date,venue, lang==="en"? "Odd tracking in progress...":"大戶落飛追蹤中...");
+    console.log( Date().toLocaleString('en-US') );
     const refreshfeq = 10000; //1000 = 1 second
         setInterval(async() => {
             // console.log("timestamp:", Date.now());
