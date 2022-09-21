@@ -8,7 +8,7 @@ async function bet() {
     document.getElementById("raceSel" + raceno).click();
     for (let i = 0; i < horse_no.length; i++) {
         await setTimeout(()=>{
-            document.getElementById("winCell" + horse_no).getElementsByTagName("span")[0].getElementsByTagName("a")[0].click();
+            document.getElementById("winCell" + horse_no[i]).getElementsByTagName("span")[0].getElementsByTagName("a")[0].click();
         }
         , 1000);
         // setTimeout(()=>{document.querySelector(".rsInvCalUnitBetInput").value = 100;}, 500);
