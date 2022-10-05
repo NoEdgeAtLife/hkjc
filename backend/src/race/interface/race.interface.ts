@@ -1,3 +1,3 @@
 export interface Race {
-    id: number;
+  number: number;
 }

@@ -6,6 +6,30 @@ Store the odds in a database. SurrealDB is used for the database.
 
 ## Usage
 
+### using pm2
+
+```bash
+npm install pm2 -g
+```
+
+or 
+
+```bash
+pnpm install pm2 -g
+```
+
+```bash
+pm2 start surreal -- start --log info --user root --pass pass
+pm2 start backend/dist/main.js --name backend
+```
+
+#### stop
+
+```bash
+pm2 delete all
+```
+
+
 ### Install
 
 ```bash
@@ -18,6 +42,8 @@ SurrealDB
 curl -sSf https://install.surrealdb.com | sh
 ```
 docker run --rm -p 8000:8000 surrealdb/surrealdb:latest start
+
+```
 
 ### sureraldb
 
@@ -48,16 +74,8 @@ node main.js
 
 ### To Do
 
-- [X] Auto switch race numbers
+- [ ] Backend
 
-- [X] Replace example data with real response
+- [ ] Frontend
 
-- [ ] Aggregate all changes in output
-
-- [X] Database test for storing win and place odds (main.js)
-
-- [ ] Refine database (main.js)
-
-- [ ] Docker and process management
-
-- [ ] Auto betting
+- [ ] Auto betting integration
