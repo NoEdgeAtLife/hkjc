@@ -1,14 +1,29 @@
-import { component$ } from '@builder.io/qwik';
+import { component$, useStyles$ } from '@builder.io/qwik';
 
 export const Logo = component$(() => {
+  useStyles$(`
+  .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    border: 1px solid #000;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  `);
+
   return (
-    <logo style={{ 'text-align': 'center' }}>
-      <a href="https://qwik.builder.io/">
+    <logo class="logo">
+      <a href="/">
         <img
-          alt="Qwik Logo"
+          alt="HKJC Logo"
           width={400}
           height={147}
-          src="https://cdn.builder.io/api/v1/image/assets%2FYJIGb4i01jvw0SRdL5Bt%2F667ab6c2283d4c4d878fb9083aacc10f"
+          src="https://www.hkjc.com/home/common/chinese/images/logo_hkjc.png"
         />
       </a>
     </logo>
