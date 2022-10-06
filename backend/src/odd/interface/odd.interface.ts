@@ -1,24 +1,32 @@
 export interface WinOdd {
-  time: string;
-  horseNumber: number;
+  time: Date;
+  raceNo: number;
+  horseNo: number;
   winOdd: number;
   money: number;
+  winStatus: number;
 }
 export interface PlaceOdd {
-  time: string;
-  horseNumber: number;
+  time: Date;
+  raceNo: number;
+  horseNo: number;
   placeOdd: number;
   money: number;
+  placeStatus: number;
 }
 export interface QinOdd {
-  time: string;
+  time: Date;
+  raceNo: number;
   horsePair: number[];
   qinOdd: number;
   money: number;
+  qinStatus: number;
 }
 export interface QplOdd {
-  time: string;
+  time: Date;
+  raceNo: number;
   horsePair: number[];
   qplOdd: number;
   money: number;
+  qplStatus: number;
 }

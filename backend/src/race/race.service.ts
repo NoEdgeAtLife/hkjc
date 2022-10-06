@@ -76,6 +76,11 @@ export class RaceService {
               number: i,
               time: time,
             });
+          } else {
+            await this.db.update(`races:max`, {
+              number: i - 1,
+            });
+            break;
           }
         } catch (err) {
           console.log('error:' + err);
