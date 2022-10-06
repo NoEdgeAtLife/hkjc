@@ -1,0 +1,18 @@
+{
+  "apps" : [
+    {
+      "name": "surreal",
+      "script": "surreal start",
+      "instances": 1,
+      "exec_mode": "fork",
+      "args": ["--log", "info", "--user", "root", "--pass", "pass"],
+    },
+    {
+      "name": "backend",
+      "script": "main.js",
+      "cwd": "./backend/dist/",
+      "instances": 1,
+      "exec_mode": "fork",
+    }
+  ]
+}
