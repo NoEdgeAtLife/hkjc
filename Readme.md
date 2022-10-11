@@ -76,9 +76,16 @@ For data collection
 node main.js
 ```
 
-### To Do
+## Frontend
 
-- [ ] Backend
+###
+
+```bash
+cd frontend
+npm run dev
+````
+
+### To Do
 
 - [ ] Frontend
 
