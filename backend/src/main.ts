@@ -12,7 +12,8 @@ async function bootstrap() {
     .addTag('race')
     .addTag('win')
     .addTag('place')
-    .addTag('quinella')
+    .addTag('qin')
+    .addTag('qpl')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
