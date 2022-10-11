@@ -12,4 +12,9 @@ export class RaceController {
   async getRaceNumber(): Promise<Race[]> {
     return this.raceService.getRaceNumber();
   }
+
+  @Get('max')
+  async getMaxRaceNumber(): Promise<number> {
+    return this.raceService.getMaxRaceNumber();
+  }
 }

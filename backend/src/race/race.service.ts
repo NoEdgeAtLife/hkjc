@@ -126,4 +126,11 @@ export class RaceService {
     await this.updateRaceNo();
     return await this.getRaceNumberFromDB();
   }
+
+  //getMaxRaceNumber
+  async getMaxRaceNumber(): Promise<number> {
+    await this.db.use('hkjc', 'races');
+    const res = await this.db.select('races:max');
+    return res[0]['number'];
+  }
 }
