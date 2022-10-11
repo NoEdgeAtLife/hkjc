@@ -1,7 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { WinOdd, PlaceOdd, QinOdd, QplOdd } from './interface/odd.interface';
 import Surreal from 'surrealdb.js';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
 
 @Controller('odd')
 export class OddController {
@@ -17,6 +17,7 @@ export class OddController {
   }
 
   @ApiTags('win')
+  @ApiParam({ name: 'id', required: true })
   @Get('win/:id')
   async getWinOdd(@Param() params): Promise<any> {
     await this.db.use('hkjc', 'wpodds');
@@ -28,6 +29,7 @@ export class OddController {
   }
 
   @ApiTags('place')
+  @ApiParam({ name: 'id', required: true })
   @Get('place/:id')
   async getPlaceOdd(@Param() params): Promise<any> {
     await this.db.use('hkjc', 'wpodds');
@@ -39,6 +41,7 @@ export class OddController {
   }
 
   @ApiTags('qin')
+  @ApiParam({ name: 'id', required: true })
   @Get('qin/:id')
   async getQinOdd(@Param() params): Promise<any> {
     await this.db.use('hkjc', 'qinodds');
@@ -50,6 +53,7 @@ export class OddController {
   }
 
   @ApiTags('qpl')
+  @ApiParam({ name: 'id', required: true })
   @Get('qpl/:id')
   async getQplOdd(@Param() params): Promise<any> {
     await this.db.use('hkjc', 'qplodds');
