@@ -16,31 +16,42 @@ export class OddController {
   }
 
   @Get('win/:id')
-  getWinOdd(@Param() params): WinOdd[] {
-    return [
-      {
-        time: new Date(),
-        raceNo: params.id,
-        horseNo: 1,
-        winOdd: 1,
-        money: 1,
-        winStatus: 1,
-      },
-    ];
+  async getWinOdd(@Param() params): Promise<any> {
+    await this.db.use('hkjc', 'wpodds');
+    const result = await this.db.query(
+      'SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds WHERE raceNo = ($raceId) and winOdd IS NOT NULL ORDER BY time DESC, horseNo ASC',
+      { raceId: params.id },
+    );
+    return result;
   }
 
   @Get('place/:id')
-  getPlaceOdd(): PlaceOdd[] {
-    return [];
+  async getPlaceOdd(@Param() params): Promise<any> {
+    await this.db.use('hkjc', 'wpodds');
+    const result = await this.db.query(
+      'SELECT time, raceNo, horseNo, placeOdd, money, placeStatus FROM wpodds WHERE raceNo = ($raceId) and placeOdd IS NOT NULL ORDER BY time DESC, horseNo ASC',
+      { raceId: params.id },
+    );
+    return result;
   }
 
   @Get('qin/:id')
-  getQinOdd(): QinOdd[] {
-    return [];
+  async getQinOdd(@Param() params): Promise<any> {
+    await this.db.use('hkjc', 'qinodds');
+    const result = await this.db.query(
+      'SELECT time, raceNo, horsePair, qinOdd, money, qinStatus FROM qinodds WHERE raceNo = ($raceId) ORDER BY time DESC, horsePair ASC',
+      { raceId: params.id },
+    );
+    return result;
   }
 
   @Get('qpl/:id')
-  getQplOdd(): QplOdd[] {
-    return [];
+  async getQplOdd(@Param() params): Promise<any> {
+    await this.db.use('hkjc', 'qplodds');
+    const result = await this.db.query(
+      'SELECT time, raceNo, horsePair, qplOdd, money, qplStatus FROM qplodds WHERE raceNo = ($raceId) ORDER BY time DESC, horsePair ASC',
+      { raceId: params.id },
+    );
+    return result;
   }
 }

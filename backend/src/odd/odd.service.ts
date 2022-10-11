@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConsoleLogger, Injectable } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import axios from 'axios';
 import { WinOdd, PlaceOdd, QinOdd, QplOdd } from './interface/odd.interface';
@@ -40,7 +40,11 @@ export class OddService {
       'select number from races where id = races:max',
     );
     const result = res[0].result[0];
-    this.maxRaceNo = result.number;
+    try {
+      this.maxRaceNo = result.number;
+    } catch (e) {
+      console.log('getting max race number ... ' + e);
+    }
   }
 
   // https://bet.hkjc.com/racing/getJSON.aspx?type=pooltot&date=<YYY-MM-DD>&venue=<venue>&raceno=<raceno>
@@ -133,10 +137,10 @@ export class OddService {
       // get pool size
       const poolSize = await this.getPoolSize(i);
       const winPoolSize = poolSize.inv.find(
-        (item) => item.pool === 'WIN',
+        (item: { pool: string }) => item.pool === 'WIN',
       ).value;
       const placePoolSize = poolSize.inv.find(
-        (item) => item.pool === 'PLA',
+        (item: { pool: string }) => item.pool === 'PLA',
       ).value;
       const url = `https://bet.hkjc.com/racing/getJSON.aspx?type=winplaodds&date=${this.date}&venue=${this.venue}&start=${i}&end=${i}`;
       const res = await axios.get(url);
@@ -147,24 +151,36 @@ export class OddService {
       }
       // if data is not empty, insert into db
       // Data sample : OUT: HHMMSS@@@WIN;1=11=0;2=4.4=1;3=7.6=0;4=18=0;5=25=0;6=14=0;7=37=0;8=15=0;9=14=0;10=16=0;11=11=0;12=13=0;13=24=0;14=5.5=0#PLA;1=11=0;2=4.4=1;3=7.6=0;4=18=0;5=25=0;6=14=0;7=37=0;8=15=0;9=14=0;10=16=0;11=11=0;12=13=0;13=24=0;14=5.5=0
-      const winPlaceOdd = data.split('@@@')[1];
+      const winPlaceOdd = data.split('WIN')[1];
       const winOdd = winPlaceOdd.split('#')[0];
       const placeOdd = winPlaceOdd.split('#')[1];
       const winOddArray = winOdd.split(';');
       const placeOddArray = placeOdd.split(';');
+
       // winOddArray sample : ["WIN", "1=11=0", "2=4.4=1", "3=7.6=0", "4=18=0", "5=25=0", "6=14=0", "7=37=0", "8=15=0", "9=14=0", "10=16=0", "11=11=0", "12=13=0", "13=24=0", "14=5.5=0"]
       // placeOddArray sample : ["PLA", "1=11=0", "2=4.4=1", "3=7.6=0", "4=18=0", "5=25=0", "6=14=0", "7=37=0", "8=15=0", "9=14=0", "10=16=0", "11=11=0", "12=13=0", "13=24=0", "14=5.5=0"]
-      const winOddSum = winOddArray.reduce((acc, cur) => {
-        const odd = cur.split('=')[1];
-        return acc + Number(odd);
-      }, 0);
-      const placeOddSum = placeOddArray.reduce((acc, cur) => {
-        const odd = cur.split('=')[1];
-        return acc + Number(odd);
-      }, 0);
+      const winOddSum = winOddArray //take out the first element
+        .slice(1)
+        .reduce((acc: number, cur: string) => {
+          const odd = cur.split('=')[1];
+          // if nan, skip
+          if (isNaN(Number(odd))) {
+            return acc;
+          }
+          return acc + parseFloat(odd);
+        }, 0);
+      const placeOddSum = placeOddArray //take out the first element
+        .slice(1)
+        .reduce((acc: number, cur: string) => {
+          const odd = cur.split('=')[1];
+          // if nan, skip
+          if (isNaN(Number(odd))) {
+            return acc;
+          }
+          return acc + parseFloat(odd);
+        }, 0);
       for (let j = 1; j < winOddArray.length; j++) {
         const winOdd = winOddArray[j].split('=');
-        const placeOdd = placeOddArray[j].split('=');
         await this.db.create('wpodds', {
           time: new Date(),
           raceNo: i,
@@ -173,6 +189,7 @@ export class OddService {
           money: (winPoolSize * Number(winOdd[1])) / winOddSum,
           winStatus: Number(winOdd[2]),
         });
+        const placeOdd = placeOddArray[j].split('=');
         await this.db.create('wpodds', {
           time: new Date(),
           raceNo: i,
@@ -201,7 +218,7 @@ export class OddService {
       // get pool size
       const poolSize = await this.getPoolSize(i);
       const qinPoolSize = poolSize.inv.find(
-        (item) => item.pool === 'QIN',
+        (item: { pool: string }) => item.pool === 'QIN',
       ).value;
       const url = `https://bet.hkjc.com/racing/getJSON.aspx?type=qin&date=${this.date}&venue=${this.venue}&raceno=${i}`;
       const res = await axios.get(url);
@@ -213,10 +230,16 @@ export class OddService {
       // if data is not empty, insert into db
       //OUT: "HHMMSS@@@;1-2=87=0;1-3=124=0;1-4=37=0;1-5=224=0;1-6=33=0;1-7=148=2;1-8=101=0;1-9=51=0;1-10=549=0;1-11=302=2;1-12=172=2;1-13=104=2;1-14=73=0;2-3=96=0;2-4=34=0;2-5=202=0;2-6=40=0;2-7=100=2;2-8=63=0;2-9=58=0;2-10=331=0;2-11=288=2;2-12=165=2;2-13=89=3;2-14=50=2;3-4=46=0;3-5=289=0;3-6=41=0;3-7=168=0;3-8=82=2;3-9=62=0;3-10=604=0;3-11=386=0;3-12=217=2;3-13=110=0;3-14=63=2;4-5=78=0;4-6=14=0;4-7=49=0;4-8=33=0;4-9=20=0;4-10=219=0;4-11=117=2;4-12=64=2;4-13=37=2;4-14=24=0;5-6=78=0;5-7=278=0;5-8=193=0;5-9=114=0;5-10=875=0;5-11=736=0;5-12=380=0;5-13=253=2;5-14=141=2;6-7=56=0;6-8=31=0;6-9=14=1;6-10=180=0;6-11=118=2;6-12=58=0;6-13=38=2;6-14=23=0;7-8=108=2;7-9=85=0;7-10=536=0;7-11=382=0;7-12=241=2;7-13=131=3;7-14=86=2;8-9=46=0;8-10=437=0;8-11=240=0;8-12=148=2;8-13=85=2;8-14=41=0;9-10=183=0;9-11=164=0;9-12=80=0;9-13=59=0;9-14=33=0;10-11=643=0;10-12=511=0;10-13=440=0;10-14=238=0;11-12=402=0;11-13=267=0;11-14=198=0;12-13=164=2;12-14=95=0;13-14=58=0"
       const qinOddArray = data.split(';');
-      const qinOddSum = qinOddArray.reduce((acc, cur) => {
-        const odd = cur.split('=')[1];
-        return acc + Number(odd);
-      }, 0);
+      const qinOddSum = qinOddArray
+        .slice(1)
+        .reduce((acc: number, cur: string) => {
+          const odd = cur.split('=')[1];
+          // if nan, skip
+          if (isNaN(Number(odd))) {
+            return acc;
+          }
+          return acc + parseFloat(odd);
+        }, 0);
       for (let j = 1; j < qinOddArray.length; j++) {
         const qinOdd = qinOddArray[j].split('=');
         await this.db.create('qinodds', {
@@ -250,7 +273,7 @@ export class OddService {
       // get pool size
       const poolSize = await this.getPoolSize(i);
       const qplPoolSize = poolSize.inv.find(
-        (item) => item.pool === 'QPL',
+        (item: { pool: string }) => item.pool === 'QPL',
       ).value;
       const url = `https://bet.hkjc.com/racing/getJSON.aspx?type=qpl&date=${this.date}&venue=${this.venue}&raceno=${i}`;
       const res = await axios.get(url);
@@ -262,10 +285,16 @@ export class OddService {
       // if data is not empty, insert into db
       //OUT: "HHMMSS@@@;1-2=87=0;1-3=124=0;1-4=37=0;1-5=224=0;1-6=33=0;1-7=148=2;1-8=101=0;1-9=51=0;1-10=549=0;1-11=302=2;1-12=172=2;1-13=104=2;1-14=73=0;2-3=96=0;2-4=34=0;2-5=202=0;2-6=40=0;2-7=100=2;2-8=63=0;2-9=58=0;2-10=331=0;2-11=288=2;2-12=165=2;2-13=89=3;2-14=50=2;3-4=46=0;3-5=289=0;3-6=41=0;3-7=168=0;3-8=82=2;3-9=62=0;3-10=604=0;3-11=386=0;3-12=217=2;3-13=110=0;3-14=63=2;4-5=78=0;4-6=14=0;4-7=49=0;4-8=33=0;4-9=20=0;4-10=219=0;4-11=117=2;4-12=64=2;4-13=37=2;4-14=24=0;5-6=78=0;5-7=278=0;5-8=193=0;5-9=114=0;5-10=875=0;5-11=736=0;5-12=380=0;5-13=253=2;5-14=141=2;6-7=56=0;6-8=31=0;6-9=14=1;6-10=180=0;6-11=118=2;6-12=58=0;6-13=38=2;6-14=23=0;7-8=108=2;7-9=85=0;7-10=536=0;7-11=382=0;7-12=241=2;7-13=131=3;7-14=86=2;8-9=46=0;8-10=437=0;8-11=240=0;8-12=148=2;8-13=85=2;8-14=41=0;9-10=183=0;9-11=164=0;9-12=80=0;9-13=59=0;9-14=33=0;10-11=643=0;10-12=511=0;10-13=440=0;10-14=238=0;11-12=402=0;11-13=267=0;11-14=198=0;12-13=164=2;12-14=95=0;13-14=58=0"
       const qplOddArray = data.split(';');
-      const qplOddSum = qplOddArray.reduce((acc, cur) => {
-        const odd = cur.split('=')[1];
-        return acc + Number(odd);
-      }, 0);
+      const qplOddSum = qplOddArray
+        .slice(1)
+        .reduce((acc: number, cur: string) => {
+          const odd = cur.split('=')[1];
+          // if nan, skip
+          if (isNaN(Number(odd))) {
+            return acc;
+          }
+          return acc + parseFloat(odd);
+        }, 0);
       for (let j = 1; j < qplOddArray.length; j++) {
         const qplOdd = qplOddArray[j].split('=');
         await this.db.create('qplodds', {

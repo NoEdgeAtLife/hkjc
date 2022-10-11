@@ -3,3 +3,63 @@ select *
 select * from races
 use races
 -h
+select *
+select * from odds
+show db
+show dbs
+INFO
+INFO FOR NS
+use db qinodds
+select *
+select * from qinodds
+info for db;
+use db qinodds;
+info for db;
+USE DB  qinodds;
+INFO FOR DB qinodds
+INFO FOR DB;
+select * from wpodds
+exit
+quit
+exit()
+select * from db
+select * from wpodds
+select * from qinodds
+select * from qplodds
+select * from wpodds
+select * from qplodds
+select * from wpodds
+select * from wpodd
+select * from 
+info for db
+select * from wpodds
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM winOdds WHERE raceId = 1
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM winOdds WHERE raceNo = 1
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM winOdds WHERE raceNo = '1'
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM winOdds WHERE raceNo = 1
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM winOdds
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM winodds
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds where raceNo = 1
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds where raceNo = 2
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds
+select * from wpodds
+select * from qinodds
+select * from wpodds
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds Where raceNo =1, horseNo =1
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds Where raceNo =1 and horseNo =1
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds Where raceNo =1 and horseNo =12
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds Where raceNo =1 and horseNo =13
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds Where raceNo =1 and horseNo =12
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds Where raceNo =1
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds Where raceNo =1 and horseNo =12
+select * from qinodds where raceNo =1, horsePair = [1,2]
+select * from qinodds where raceNo =1 and horsePair = [1,2]
+select * from qinodds where raceNo =1
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds WHERE raceNo = ($raceId) and winOdd IS NOT NULL ORDER BY time, horseNo
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds WHERE raceNo = 1 and winOdd IS NOT NULL ORDER BY time, horseNo
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds WHERE raceNo = 1 and winOdd IS NOT NULL ORDER BY time DESC, horseNo ASC
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds WHERE raceNo = 1 and winOdd IS NOT NULL ORDER BY time DESC, horseNo DESC
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds WHERE raceNo = 1 and winOdd IS NOT NULL ORDER BY time , horseNo ASC
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds WHERE raceNo = 1 and winOdd IS NOT NULL ORDER BY DESC time, horseNo ASC
+SELECT time, raceNo, horseNo, winOdd, money, winStatus FROM wpodds WHERE raceNo = 1 and winOdd IS NOT NULL ORDER BY time DESC, horseNo ASC
