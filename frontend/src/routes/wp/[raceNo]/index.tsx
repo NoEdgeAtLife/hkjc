@@ -1,5 +1,6 @@
 import { component$, Resource, useWatch$} from "@builder.io/qwik";
 import { RequestHandler, useEndpoint, useLocation } from "@builder.io/qwik-city";
+import "./index.css";
 
 type EndpointData = RaceData[] | null;
 
@@ -28,7 +29,19 @@ export const onGet: RequestHandler<EndpointData> = async ({ params, response }) 
         throw response.redirect("/wp/1");
     }
     else {
-        let response = await fetch('http://localhost:3000/odd/win/' + params.raceNo);
+        let response = await fetch('http://localhost:3000/odd/ref', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'accept': '*/*',
+            },
+            body: JSON.stringify({
+                "id": raceNo,
+                // 30 min before now , utc+8
+                "reftime": new Date(Date.now()).toLocaleString('en-US', { timeZone: 'Asia/Hong_Kong' }),
+                "oddtype": "win"
+            })
+        });
         const data = await response.json();
         const racedata = data[0]['result'];
         // post /odd/ref 
@@ -46,7 +59,7 @@ export const onGet: RequestHandler<EndpointData> = async ({ params, response }) 
             body: JSON.stringify({
                 "id": raceNo,
                 // 30 min before now , utc+8
-                "reftime": new Date(Date.now() - 5 * 60 * 1000).toLocaleString('en-US', { timeZone: 'Asia/Hong_Kong' }),
+                "reftime": new Date(Date.now() - 30 * 60 * 1000).toLocaleString('en-US', { timeZone: 'Asia/Hong_Kong' }),
                 "oddtype": "win"
             })
         });
@@ -79,6 +92,14 @@ export default component$(() => {
           <h1>Race</h1>
             <div>raceNo: {raceNo}</div>
             <div>Update Time : {race[0].time}</div>
+            {/* get max race no and render button to wp/1..maxraceno */}
+            {getMaxRaceNo().then((maxRaceNo) => {
+                const buttons = [];
+                for (let i = 1; i <= maxRaceNo; i++) {
+                    buttons.push(<button><a href={"/wp/" + i + "/"}>{i}</a></button>);
+                }
+                return buttons;
+            })}
             <table>
                 <tr>
                     <th>horseNo</th>
@@ -88,25 +109,18 @@ export default component$(() => {
                     <th>winStatus</th>
                     <th>winMoneyChange</th>
                 </tr>
-                { // convert to set based on horseNo
-                race?.reduce((acc, cur) => {
-                    if (!horseNoSet.has(cur.horseNo)) {
-                        horseNoSet.add(cur.horseNo);
-                        acc.push(cur);
-                    }
-                    return acc;
-                }, []) // sort by money - winMoneyRef
+                {race // sort by money - winMoneyRef
                 .sort((b, a) => a.money - b.money - (a.winMoneyRef - b.winMoneyRef))
                 // filter the top 6
                 .filter((data, index) => index < 11)
-                .map((data) => (
+                .map((data, index) => (
                     <tr>
                         <td>{data.horseNo}</td>
                         <td>{Math.trunc(data.money)}</td>
                         {/* <td>{data.time}</td> */}
                         <td>{data.winOdd}</td>
                         <td>{data.winStatus}</td>
-                        <td>{Math.trunc(data.money - data.winMoneyRef)}</td>
+                        <td id = {'W'+index.toString()}>{Math.trunc(data.money - data.winMoneyRef)}</td>
                     </tr>
                 ))} 
             </table>

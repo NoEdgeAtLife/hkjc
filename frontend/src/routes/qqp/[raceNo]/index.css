@@ -1,0 +1,17 @@
+/* table rows, id= 0,1,2,3, highlight = deep blue for 0, blue for 1,2,3 */
+
+[ id = "Q0" ]   { 
+   background-color :   #3d3df5 ;
+}
+
+[ id = "Q1" ]   { 
+   background-color :   #0000ff ; 
+}
+
+[ id = "Q2" ]   { 
+   background-color :   #0000ff ; 
+}
+
+[ id = "Q3" ]   { 
+   background-color :   #0000ff; 
+}
