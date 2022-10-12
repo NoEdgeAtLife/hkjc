@@ -14,6 +14,15 @@ export default component$(() => {
           <img src="https://is.hkjc.com/jcbw/SplashScn/mobile/js_ewin/Speed/images/hkjclogo_c.png" />
         </a>
       </div>
+      <div>
+        <a href="/wp/-1">Win Place</a>
+      </div>
+      <div>
+        <a href="/qqp/-1">Qin Qplace</a>
+      </div>
+      <div>
+        <a href="/pro/-1">Pro</a>
+      </div>
     </header>
   );
 });

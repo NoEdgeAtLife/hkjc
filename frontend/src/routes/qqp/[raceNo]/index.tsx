@@ -81,7 +81,7 @@ export const onGet: RequestHandler<EndpointData> = async ({ params, response }) 
             body: JSON.stringify({
                 "id": raceNo,
                 // 30 min before now , utc+8
-                "reftime": new Date(Date.now() - 30 * 60 * 1000).toLocaleString('en-US', { timeZone: 'Asia/Hong_Kong' }),
+                "reftime": new Date(Date.now() - 10 * 60 * 1000).toLocaleString('en-US', { timeZone: 'Asia/Hong_Kong' }),
                 "oddtype": "qin"
             })
         });

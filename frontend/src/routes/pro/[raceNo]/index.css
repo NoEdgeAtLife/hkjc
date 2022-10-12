@@ -1,0 +1,33 @@
+/* table rows, id= 0,1,2,3, highlight = deep red for 0, red for 1,2,3 */
+
+[ id = "W0" ]   { 
+   background-color :   #800000 ; 
+}
+
+[ id = "W1" ]   { 
+   background-color :   #ff0000 ; 
+}
+
+[ id = "W2" ]   { 
+   background-color :   #ff0000 ; 
+}
+
+[ id = "W3" ]   { 
+   background-color :   #ff0000 ; 
+}
+
+[ id = "QPer1"] {
+   background-color: aquamarine;
+}
+
+[ id = "QPer2"] {
+   background-color: cornflowerblue;
+}
+
+[ id = "QPer3"] {
+   background-color: cornflowerblue;
+}
+
+[ id = "QPer4"] {
+   background-color: cornflowerblue;
+}

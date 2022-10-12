@@ -98,7 +98,6 @@ export class OddController {
       );
       return result;
     } else if (oddtype === 'qin') {
-      console.log(maxHorseNo);
       await this.db.use('hkjc', 'qinodds');
       const result = await this.db.query(
         'SELECT time, raceNo, horsePair, qinOdd, money, qinStatus FROM qinodds WHERE raceNo = ($raceId) and qinOdd IS NOT NULL and time <= ($reftime) ORDER BY time DESC, horsePair ASC LIMIT ' +
