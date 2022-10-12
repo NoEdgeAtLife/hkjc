@@ -133,4 +133,11 @@ export class RaceService {
     const res = await this.db.select('races:max');
     return res[0]['number'];
   }
+
+  //getCurrentRaceNumber
+  async getCurrentRaceNumber(): Promise<number> {
+    await this.db.use('hkjc', 'races');
+    const res = await this.db.select('races:current');
+    return res[0]['number'];
+  }
 }

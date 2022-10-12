@@ -19,12 +19,19 @@ export const getMaxRaceNo = async () => {
     return data;
 }
 
+export const getCurrentRaceNo = async () => {
+    const response = await fetch("http://localhost:3000/race/current");
+    const data = await response.json();
+    return data;
+}
+
 export const onGet: RequestHandler<EndpointData> = async ({ params, response }) => {
     const maxRaceNo = await getMaxRaceNo();
     const raceNo = Number(params.raceNo);
     if (raceNo > maxRaceNo || raceNo < 1 || isNaN(raceNo)) {
         response.status = 404;
-        throw response.redirect("/qpl/1");
+        const currentRace = await getCurrentRaceNo();
+        throw response.redirect("/qqp/" + currentRace);
     }
     else {
         let response = await fetch('http://localhost:3000/odd/ref', {
@@ -105,7 +112,6 @@ export const onGet: RequestHandler<EndpointData> = async ({ params, response }) 
         // return race data with qinMoneyRef and qinPercentChange
         const result = racedata.map((item) => {
             const horseNo1 = item.horsePair[0];
-            const horseNo2 = item.horsePair[1];
             return {
                 raceNo: raceNo,
                 money: item.money,
@@ -115,7 +121,6 @@ export const onGet: RequestHandler<EndpointData> = async ({ params, response }) 
                 qinPercentChange: qinPercentChange[horseNo1]
             }
         }).concat(racedata.map((item) => {
-            const horseNo1 = item.horsePair[0];
             const horseNo2 = item.horsePair[1];
             return {
                 raceNo: raceNo,

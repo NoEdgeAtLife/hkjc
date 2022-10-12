@@ -17,4 +17,9 @@ export class RaceController {
   async getMaxRaceNumber(): Promise<number> {
     return this.raceService.getMaxRaceNumber();
   }
+
+  @Get('current')
+  async geCurrentRaceNumber(): Promise<number> {
+    return this.raceService.getCurrentRaceNumber();
+  }
 }

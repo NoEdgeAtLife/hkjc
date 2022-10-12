@@ -21,12 +21,19 @@ export const getMaxRaceNo = async () => {
     return data;
 }
 
+export const getCurrentRaceNo = async () => {
+    const response = await fetch("http://localhost:3000/race/current");
+    const data = await response.json();
+    return data;
+}
+
 export const onGet: RequestHandler<EndpointData> = async ({ params, response }) => {
     const maxRaceNo = await getMaxRaceNo();
     const raceNo = Number(params.raceNo);
     if (raceNo > maxRaceNo || raceNo < 1 || isNaN(raceNo)) {
         response.status = 404;
-        throw response.redirect("/wp/1");
+        const currentRace = await getCurrentRaceNo();
+        throw response.redirect("/wp/" + currentRace);
     }
     else {
         let response = await fetch('http://localhost:3000/odd/ref', {
@@ -81,7 +88,7 @@ export default component$(() => {
   const location = useLocation();
   const raceNo = location.params.raceNo;
   const resource = useEndpoint<EndpointData>();
-  const horseNoSet = new Set();
+  const horseNoSet = new Set<number>();
   return (
     <Resource
       value={resource}
@@ -109,7 +116,14 @@ export default component$(() => {
                     <th>winStatus</th>
                     <th>winMoneyChange</th>
                 </tr>
-                {race // sort by money - winMoneyRef
+                {race?.reduce((acc, cur) => {
+                    if (!horseNoSet.has(cur.horseNo)) {
+                        horseNoSet.add(cur.horseNo);
+                        acc.push(cur);
+                    }
+                    return acc;
+                }, [])
+                 // sort by money - winMoneyRef
                 .sort((b, a) => a.money - b.money - (a.winMoneyRef - b.winMoneyRef))
                 // filter the top 6
                 .filter((data, index) => index < 11)
