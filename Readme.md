@@ -4,11 +4,22 @@ Get the odds from the Hong Kong Jockey Club website.
 
 Store the odds in a database. SurrealDB is used for the database.
 
+Frontend is built on qwik. Backend is built on Nestjs. 
+
 ## API
 
 check /api
 
 ## Start server
+
+### DB, backend and frontend
+
+```
+bash
+surreal start --log info --user root --pass pass
+cd backend && nest start
+cd frontend && npm run dev
+```
 
 ### using pm2
 
@@ -25,29 +36,37 @@ pnpm install pm2 -g
 ```bash
 pm2 start surreal -- start --log info --user root --pass pass
 cd backend && pm2 start --name backend nest -- start
+cd frontend && pm2 start npm -- run dev
 ```
 
-#### stop
+#### Stop
 
 ```bash
 pm2 delete all
 ```
 
+stop only
 
-### Install
+* pm2 stop all
+
+### Installation
 
 ```bash
 npm install
 ```
 
-SurrealDB
+or 
+
+```bash
+pnpm install
+```
+
+SurrealDB:
 
 ```bash
 curl -sSf https://install.surrealdb.com | sh
 ```
 docker run --rm -p 8000:8000 surrealdb/surrealdb:latest start
-
-```
 
 ### sureraldb
 
@@ -59,7 +78,7 @@ connection: surreal sql --conn http://localhost:8000 --user root --pass pass --n
 
 export : surreal export --conn http://localhost:8000 --user root --pass pass --ns hkjc --db wpodds export.sql
 
-### Run
+### cli notification (deprecated)
 
 Monitor Sudden Odds Changes
 
@@ -70,24 +89,15 @@ node notification.js
 arg:
 --lang [eng|chi] default eng
 
-For data collection
+### cli data collection (deprecated)
 
 ```bash
 node main.js
 ```
 
-## Frontend
-
-###
-
-```bash
-cd frontend
-npm run dev
-````
-
 ### Issue
 
-- [ ] WP odd crashes and stop updating 
+- [ ] WP odd crashes and stop updating on some shells
 
 ### To Do
 
