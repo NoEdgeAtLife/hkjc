@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  Param,
-  Post,
-  Body,
-  ConsoleLogger,
-} from '@nestjs/common';
+import { Controller, Get, Param, Post, Body } from '@nestjs/common';
 import { WinOdd, PlaceOdd, QinOdd, QplOdd } from './interface/odd.interface';
 import Surreal from 'surrealdb.js';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
@@ -14,6 +7,7 @@ import { GetRefOddByTimeDto } from './dto/getRefOddByTime.dto';
 @Controller('odd')
 export class OddController {
   db = new Surreal('http://127.0.0.1:8000/rpc');
+  maxHorseNo: number[];
 
   constructor() {
     (async () => {
@@ -21,6 +15,21 @@ export class OddController {
         user: 'root',
         pass: 'pass',
       });
+      await this.db.use('hkjc', 'races');
+      const res = await this.db.query(
+        'select number from races where id = races:max',
+      );
+      const result = res[0].result[0];
+      const maxRaceNo: number = result.number;
+      this.maxHorseNo = new Array(maxRaceNo + 1);
+      for (let id = 1; id <= maxRaceNo; id++) {
+        await this.db.use('hkjc', 'wpodds');
+        const maxHorseNoResult = await this.db.query(
+          'SELECT horseNo from wpodds where raceNo = ($raceId) and winOdd IS NOT NULL Order By horseNo DESC LIMIT 1',
+          { raceId: id },
+        );
+        this.maxHorseNo[id] = maxHorseNoResult[0].result[0].horseNo;
+      }
     })();
   }
 
@@ -47,12 +56,7 @@ export class OddController {
     @Body() getRefOddByTimeDto: GetRefOddByTimeDto,
   ): Promise<any> {
     const { id, reftime, oddtype } = getRefOddByTimeDto;
-    await this.db.use('hkjc', 'wpodds');
-    const maxHorseNoResult = await this.db.query(
-      'SELECT horseNo from wpodds where raceNo = ($raceId) and winOdd IS NOT NULL Order By horseNo DESC LIMIT 1',
-      { raceId: id },
-    );
-    const maxHorseNo = maxHorseNoResult[0].result[0].horseNo;
+    const maxHorseNo = this.maxHorseNo[id];
     if (oddtype === 'win') {
       await this.db.use('hkjc', 'wpodds');
       const result = await this.db.query(

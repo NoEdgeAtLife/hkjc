@@ -1,4 +1,4 @@
-import { ConsoleLogger, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import axios from 'axios';
 import { WinOdd, PlaceOdd, QinOdd, QplOdd } from './interface/odd.interface';
