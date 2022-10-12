@@ -24,7 +24,7 @@ pnpm install pm2 -g
 
 ```bash
 pm2 start surreal -- start --log info --user root --pass pass
-pm2 start backend/dist/main.js --name backend
+cd backend && pm2 start --name backend nest -- start
 ```
 
 #### stop
@@ -55,9 +55,9 @@ start server : surreal start --log info --user root --pass pass [path]
 
 [path] default to be memory, can be set to a subdirectory, for example "file://hkjc"
 
-connection: surreal sql --conn http://localhost:8000 --user root --pass pass --ns hkjc --db odds
+connection: surreal sql --conn http://localhost:8000 --user root --pass pass --ns hkjc --db wpodds
 
-export : surreal export --conn http://localhost:8000 --user root --pass pass --ns hkjc --db odds export.sql
+export : surreal export --conn http://localhost:8000 --user root --pass pass --ns hkjc --db wpodds export.sql
 
 ### Run
 
@@ -85,8 +85,16 @@ cd frontend
 npm run dev
 ````
 
+### Issue
+
+- [ ] WP odd crashes and stop updating 
+
 ### To Do
 
 - [ ] Frontend
 
+- [ ] Data Structure Optimization
+
 - [ ] Auto betting integration
+
+- [ ] Logger

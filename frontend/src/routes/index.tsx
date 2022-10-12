@@ -5,10 +5,10 @@ import { Link } from '@builder.io/qwik-city';
 export default component$(() => {
   return (
     <div class="col2">
-      <Link class="mindblow" href="/wp">
+      <Link class="mindblow" href="/wp/1">
         Win Place
       </Link>
-      <Link class="mindblow" href="/qqp">
+      <Link class="mindblow" href="/qqp/1">
         Q/ Qplace
       </Link>
     </div>

@@ -116,3 +116,23 @@ a.mindblow:hover {
   margin-bottom: 4px;
   transform: translateY(4px);
 }
+
+table {
+  border-collapse: collapse;
+}
+
+table,
+th,
+td {
+  border: 1px solid var(--qwik-light-purple);
+}
+
+th,
+td {
+  padding: 5px;
+}
+
+th {
+  background-color: var(--qwik-light-purple);
+  color: white;
+}

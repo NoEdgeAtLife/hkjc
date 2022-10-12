@@ -156,7 +156,6 @@ export class OddService {
       const placeOdd = winPlaceOdd.split('#')[1];
       const winOddArray = winOdd.split(';');
       const placeOddArray = placeOdd.split(';');
-
       // winOddArray sample : ["WIN", "1=11=0", "2=4.4=1", "3=7.6=0", "4=18=0", "5=25=0", "6=14=0", "7=37=0", "8=15=0", "9=14=0", "10=16=0", "11=11=0", "12=13=0", "13=24=0", "14=5.5=0"]
       // placeOddArray sample : ["PLA", "1=11=0", "2=4.4=1", "3=7.6=0", "4=18=0", "5=25=0", "6=14=0", "7=37=0", "8=15=0", "9=14=0", "10=16=0", "11=11=0", "12=13=0", "13=24=0", "14=5.5=0"]
       const winOddSum = winOddArray //take out the first element
@@ -189,7 +188,7 @@ export class OddService {
           raceNo: i,
           horseNo: Number(winOdd[0]),
           winOdd: Number(winOdd[1]),
-          money: (winPoolSize * Number(winOdd[1])) / winOddSum,
+          money: (winPoolSize * 0.825) / Number(winOdd[1]),
           winStatus: Number(winOdd[2]),
         });
         const placeOdd = placeOddArray[j].split('=');
@@ -200,7 +199,7 @@ export class OddService {
           raceNo: i,
           horseNo: Number(placeOdd[0]),
           placeOdd: Number(placeOdd[1]),
-          money: (placePoolSize * Number(placeOdd[1])) / placeOddSum,
+          money: (placePoolSize * 0.825) / Number(placeOdd[1]),
           placeStatus: Number(placeOdd[2]),
         });
       }
@@ -257,7 +256,7 @@ export class OddService {
             Number(qinOdd[0].split('-')[1]),
           ],
           qinOdd: Number(qinOdd[1]),
-          money: (qinPoolSize * Number(qinOdd[1])) / qinOddSum,
+          money: (qinPoolSize * 0.825) / Number(qinOdd[1]),
           qinStatus: Number(qinOdd[2]),
         });
       }
@@ -314,7 +313,7 @@ export class OddService {
             Number(qplOdd[0].split('-')[1]),
           ],
           qplOdd: Number(qplOdd[1]),
-          money: (qplPoolSize * Number(qplOdd[1])) / qplOddSum,
+          money: (qplPoolSize * 0.825) / Number(qplOdd[1]),
           qplStatus: Number(qplOdd[2]),
         });
       }

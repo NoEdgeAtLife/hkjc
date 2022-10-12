@@ -8,6 +8,7 @@ import { GetRefOddByTimeDto } from './dto/getRefOddByTime.dto';
 export class OddController {
   db = new Surreal('http://127.0.0.1:8000/rpc');
   maxHorseNo: number[];
+  maxRaceNo: number;
 
   constructor() {
     (async () => {
@@ -15,22 +16,41 @@ export class OddController {
         user: 'root',
         pass: 'pass',
       });
-      await this.db.use('hkjc', 'races');
-      const res = await this.db.query(
-        'select number from races where id = races:max',
-      );
-      const result = res[0].result[0];
-      const maxRaceNo: number = result.number;
-      this.maxHorseNo = new Array(maxRaceNo + 1);
-      for (let id = 1; id <= maxRaceNo; id++) {
-        await this.db.use('hkjc', 'wpodds');
-        const maxHorseNoResult = await this.db.query(
-          'SELECT horseNo from wpodds where raceNo = ($raceId) and winOdd IS NOT NULL Order By horseNo DESC LIMIT 1',
-          { raceId: id },
-        );
-        this.maxHorseNo[id] = maxHorseNoResult[0].result[0].horseNo;
-      }
     })();
+  }
+
+  async updateRaceNoAndHorseNo(): Promise<any> {
+    while (true) {
+      try {
+        await this.db.use('hkjc', 'races');
+        const res = await this.db.query(
+          'select number from races where id = races:max',
+        );
+        const result = res[0].result[0];
+        this.maxRaceNo = result.number;
+        break;
+      } catch (e) {
+        console.log(e);
+        continue;
+      }
+    }
+    this.maxHorseNo = new Array(this.maxRaceNo + 1);
+    for (let id = 1; id <= this.maxRaceNo; id++) {
+      while (true) {
+        try {
+          await this.db.use('hkjc', 'wpodds');
+          const maxHorseNoResult = await this.db.query(
+            'SELECT horseNo from wpodds where raceNo = ($raceId) and winOdd IS NOT NULL Order By horseNo DESC LIMIT 1',
+            { raceId: id },
+          );
+          this.maxHorseNo[id] = maxHorseNoResult[0].result[0].horseNo;
+          break;
+        } catch (e) {
+          console.log(e);
+          continue;
+        }
+      }
+    }
   }
 
   @ApiTags('win')
@@ -55,6 +75,9 @@ export class OddController {
   async getWinOddByTime(
     @Body() getRefOddByTimeDto: GetRefOddByTimeDto,
   ): Promise<any> {
+    while (this.maxRaceNo === undefined) {
+      await this.updateRaceNoAndHorseNo();
+    }
     const { id, reftime, oddtype } = getRefOddByTimeDto;
     const maxHorseNo = this.maxHorseNo[id];
     if (oddtype === 'win') {

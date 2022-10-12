@@ -10,6 +10,8 @@ interface RaceData {
   horseNo: number;
   winOdd: number;
   winStatus: number;
+  winMoneyRef: number;
+  qinPercentChange: number;
 }
 
 export const getMaxRaceNo = async () => {
@@ -26,9 +28,39 @@ export const onGet: RequestHandler<EndpointData> = async ({ params, response }) 
         throw response.redirect("/wp/1");
     }
     else {
-        const response = await fetch('http://localhost:3000/odd/win/' + params.raceNo);
+        let response = await fetch('http://localhost:3000/odd/win/' + params.raceNo);
         const data = await response.json();
-        return data[0]['result'];
+        const racedata = data[0]['result'];
+        // post /odd/ref 
+        // body : {
+        //     "id": raceId,
+        //     "reftime": "string", e.g. 5 min before now , utc+8
+        //     "oddtype": "string"  e.g. win
+        //   }
+        response = await fetch('http://localhost:3000/odd/ref', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'accept': '*/*',
+            },
+            body: JSON.stringify({
+                "id": raceNo,
+                // 30 min before now , utc+8
+                "reftime": new Date(Date.now() - 5 * 60 * 1000).toLocaleString('en-US', { timeZone: 'Asia/Hong_Kong' }),
+                "oddtype": "win"
+            })
+        });
+        const refdata = await response.json();
+        const refmoney = refdata[0]['result'];
+        // refmoney = [ { horseNo: 1, money: 1.1, ... }, { horseNo: 2, money: 1.2, ... }, ... ]
+        // racedata = [ { horseNo: 1, money: 1.1, ... }, { horseNo: 2, money: 1.2, ... }, ... ]
+        // merge refmoney and racedata, rename money of refmoney to winMoneyRef
+        const mergedata = racedata.map((item) => {
+            const refitem = refmoney.find((refitem) => refitem.horseNo === item.horseNo);
+            return { ...item, winMoneyRef: refitem?.money || 0 };
+        }
+        );
+        return mergedata;
     }
 };
 
@@ -46,13 +78,15 @@ export default component$(() => {
         <>
           <h1>Race</h1>
             <div>raceNo: {raceNo}</div>
+            <div>Update Time : {race[0].time}</div>
             <table>
                 <tr>
                     <th>horseNo</th>
                     <th>money</th>
-                    <th>time</th>
+                    {/* <th>time</th> */}
                     <th>winOdds</th>
                     <th>winStatus</th>
+                    <th>winMoneyChange</th>
                 </tr>
                 { // convert to set based on horseNo
                 race?.reduce((acc, cur) => {
@@ -61,15 +95,18 @@ export default component$(() => {
                         acc.push(cur);
                     }
                     return acc;
-                }, []) // sort by horseNo
-                .sort((a, b) => a.horseNo - b.horseNo)
+                }, []) // sort by money - winMoneyRef
+                .sort((b, a) => a.money - b.money - (a.winMoneyRef - b.winMoneyRef))
+                // filter the top 6
+                .filter((data, index) => index < 11)
                 .map((data) => (
                     <tr>
                         <td>{data.horseNo}</td>
-                        <td>{data.money}</td>
-                        <td>{data.time}</td>
+                        <td>{Math.trunc(data.money)}</td>
+                        {/* <td>{data.time}</td> */}
                         <td>{data.winOdd}</td>
                         <td>{data.winStatus}</td>
+                        <td>{Math.trunc(data.money - data.winMoneyRef)}</td>
                     </tr>
                 ))} 
             </table>
