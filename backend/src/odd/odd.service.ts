@@ -182,7 +182,10 @@ export class OddService {
       for (let j = 1; j < winOddArray.length; j++) {
         const winOdd = winOddArray[j].split('=');
         await this.db.create('wpodds', {
-          time: new Date(),
+          // timezone is current time, UTC +8
+          time: new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Hong_Kong',
+          }),
           raceNo: i,
           horseNo: Number(winOdd[0]),
           winOdd: Number(winOdd[1]),
@@ -191,7 +194,9 @@ export class OddService {
         });
         const placeOdd = placeOddArray[j].split('=');
         await this.db.create('wpodds', {
-          time: new Date(),
+          time: new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Hong_Kong',
+          }),
           raceNo: i,
           horseNo: Number(placeOdd[0]),
           placeOdd: Number(placeOdd[1]),
@@ -243,7 +248,9 @@ export class OddService {
       for (let j = 1; j < qinOddArray.length; j++) {
         const qinOdd = qinOddArray[j].split('=');
         await this.db.create('qinodds', {
-          time: new Date(),
+          time: new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Hong_Kong',
+          }),
           raceNo: i,
           horsePair: [
             Number(qinOdd[0].split('-')[0]),
@@ -298,7 +305,9 @@ export class OddService {
       for (let j = 1; j < qplOddArray.length; j++) {
         const qplOdd = qplOddArray[j].split('=');
         await this.db.create('qplodds', {
-          time: new Date(),
+          time: new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Hong_Kong',
+          }),
           raceNo: i,
           horsePair: [
             Number(qplOdd[0].split('-')[0]),
