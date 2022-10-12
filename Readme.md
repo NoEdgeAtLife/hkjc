@@ -1,5 +1,7 @@
 # Hong Kong Jockey Club Odd Scraping
 
+![demo](./demo.jpeg)
+
 Get the odds from the Hong Kong Jockey Club website.
 
 Store the odds in a database. SurrealDB is used for the database.
